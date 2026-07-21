@@ -1,11 +1,8 @@
 const copy = {
   es: {
-    eyebrow: "Puente para mundo normal",
-    title: "Conecta Verity a Groq",
-    lede: "Pega tu propia API key de Groq. La web crea una URL privada para tu mundo de Minecraft.",
-    keyLabel: "API key de Groq",
-    modelLabel: "Modelo",
-    create: "Crear conexión",
+    languageLabel: "Idioma",
+    keyLabel: "Pon tu Key Groq",
+    create: "Generar conexión",
     commandLabel: "Ejecuta esto en tu mundo de Minecraft:",
     copy: "Copiar comando",
     creating: "Creando conexión...",
@@ -15,12 +12,9 @@ const copy = {
     failed: "No se pudo crear la conexión.",
   },
   en: {
-    eyebrow: "Normal world bridge",
-    title: "Connect Verity to Groq",
-    lede: "Paste your own Groq API key. This page creates a private URL for your Minecraft world.",
-    keyLabel: "Groq API key",
-    modelLabel: "Model",
-    create: "Create connection",
+    languageLabel: "Language",
+    keyLabel: "Enter your Groq Key",
+    create: "Generate connection",
     commandLabel: "Run this in your Minecraft world:",
     copy: "Copy command",
     creating: "Creating connection...",
@@ -30,12 +24,9 @@ const copy = {
     failed: "Could not create connection.",
   },
   pt: {
-    eyebrow: "Ponte para mundo normal",
-    title: "Conecte Verity ao Groq",
-    lede: "Cole sua própria API key da Groq. A página cria uma URL privada para seu mundo Minecraft.",
-    keyLabel: "API key da Groq",
-    modelLabel: "Modelo",
-    create: "Criar conexão",
+    languageLabel: "Idioma",
+    keyLabel: "Coloque sua Key Groq",
+    create: "Gerar conexão",
     commandLabel: "Execute isto no seu mundo Minecraft:",
     copy: "Copiar comando",
     creating: "Criando conexão...",
@@ -45,12 +36,9 @@ const copy = {
     failed: "Não foi possível criar a conexão.",
   },
   fr: {
-    eyebrow: "Pont pour monde normal",
-    title: "Connecter Verity à Groq",
-    lede: "Collez votre propre clé API Groq. Cette page crée une URL privée pour votre monde Minecraft.",
-    keyLabel: "Clé API Groq",
-    modelLabel: "Modèle",
-    create: "Créer la connexion",
+    languageLabel: "Langue",
+    keyLabel: "Entrez votre clé Groq",
+    create: "Générer la connexion",
     commandLabel: "Exécutez ceci dans votre monde Minecraft :",
     copy: "Copier la commande",
     creating: "Création de la connexion...",
@@ -60,12 +48,9 @@ const copy = {
     failed: "Impossible de créer la connexion.",
   },
   de: {
-    eyebrow: "Bridge für normale Welten",
-    title: "Verity mit Groq verbinden",
-    lede: "Füge deinen eigenen Groq API-Key ein. Diese Seite erstellt eine private URL für deine Minecraft-Welt.",
-    keyLabel: "Groq API-Key",
-    modelLabel: "Modell",
-    create: "Verbindung erstellen",
+    languageLabel: "Sprache",
+    keyLabel: "Gib deinen Groq Key ein",
+    create: "Verbindung generieren",
     commandLabel: "Führe das in deiner Minecraft-Welt aus:",
     copy: "Befehl kopieren",
     creating: "Verbindung wird erstellt...",
@@ -102,7 +87,7 @@ applyLanguage();
 
 document.querySelector("#create").addEventListener("click", async () => {
   const groqApiKey = document.querySelector("#groqKey").value.trim();
-  const model = document.querySelector("#model").value.trim() || "llama-3.1-8b-instant";
+  const model = "llama-3.1-8b-instant";
   result.classList.add("hidden");
   if (!groqApiKey.startsWith("gsk_")) {
     setStatus(t("invalid"), "error");
