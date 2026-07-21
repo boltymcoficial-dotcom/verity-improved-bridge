@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VERITY - IMPROVED Bridge</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <img class="logo" src="/verity-title.png" alt="VERITY">
+      <select id="language" aria-label="Language">
+        <option value="es">Español</option>
+        <option value="en">English</option>
+        <option value="pt">Português</option>
+        <option value="fr">Français</option>
+        <option value="de">Deutsch</option>
+      </select>
+    </header>
+
+    <section class="panel">
+      <p class="eyebrow" data-i18n="eyebrow">Normal world bridge</p>
+      <h1 data-i18n="title">Connect Verity to Groq</h1>
+      <p class="lede" data-i18n="lede">Paste your own Groq API key. This page creates a private connection URL for your Minecraft world.</p>
+
+      <label for="groqKey" data-i18n="keyLabel">Groq API key</label>
+      <input id="groqKey" autocomplete="off" spellcheck="false" type="password" placeholder="gsk_..." />
+
+      <label for="model" data-i18n="modelLabel">Model</label>
+      <input id="model" autocomplete="off" spellcheck="false" value="llama-3.1-8b-instant" />
+
+      <button id="create" type="button" data-i18n="create">Create connection</button>
+
+      <div id="result" class="result hidden">
+        <p data-i18n="commandLabel">Run this in your Minecraft world:</p>
+        <code id="command"></code>
+        <button id="copy" type="button" data-i18n="copy">Copy command</button>
+      </div>
+
+      <p id="status" class="status"></p>
+    </section>
+  </main>
+
+  <a class="discord" href="https://discord.gg/Z4gGVRcHnj" target="_blank" rel="noreferrer">Discord</a>
+  <script src="/app.js"></script>
+</body>
+</html>
