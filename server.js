@@ -13,11 +13,38 @@ const PLAYER_COOLDOWN_MS = Number(process.env.PLAYER_COOLDOWN_MS || 2200);
 const MAX_ACTIVE_PER_SESSION = Number(process.env.MAX_ACTIVE_PER_SESSION || 2);
 const MAX_QUEUE_PER_SESSION = Number(process.env.MAX_QUEUE_PER_SESSION || 24);
 const MAX_SESSIONS = Number(process.env.MAX_SESSIONS || 5000);
+const SESSION_SECRET = crypto.createHash("sha256")
+  .update(String(process.env.SESSION_SECRET || "verity-improved-session-v1"))
+  .digest();
 
 const sessions = new Map();
 
-function randomId() {
-  return crypto.randomBytes(9).toString("base64url");
+function createSessionToken(apiKey, model) {
+  const iv = crypto.randomBytes(12);
+  const cipher = crypto.createCipheriv("aes-256-gcm", SESSION_SECRET, iv);
+  const payload = Buffer.from(JSON.stringify({
+    apiKey,
+    model: model || DEFAULT_MODEL,
+    createdAt: Date.now(),
+  }), "utf8");
+  const encrypted = Buffer.concat([cipher.update(payload), cipher.final()]);
+  return Buffer.concat([iv, cipher.getAuthTag(), encrypted]).toString("base64url");
+}
+
+function readSessionToken(token) {
+  try {
+    const raw = Buffer.from(String(token), "base64url");
+    if (raw.length < 29) return null;
+    const decipher = crypto.createDecipheriv("aes-256-gcm", SESSION_SECRET, raw.subarray(0, 12));
+    decipher.setAuthTag(raw.subarray(12, 28));
+    const payload = Buffer.concat([decipher.update(raw.subarray(28)), decipher.final()]);
+    const data = JSON.parse(payload.toString("utf8"));
+    if (!/^gsk_[A-Za-z0-9_-]{20,}$/.test(data.apiKey)) return null;
+    if (!Number.isFinite(data.createdAt) || Date.now() - data.createdAt > SESSION_TTL_MS) return null;
+    return data;
+  } catch {
+    return null;
+  }
 }
 
 function json(res, status, data) {
@@ -119,8 +146,13 @@ function cleanupSessions() {
 }
 
 function sessionFor(id) {
-  const session = sessions.get(id);
-  if (!session) return null;
+  let session = sessions.get(id);
+  if (!session) {
+    const token = readSessionToken(id);
+    if (!token) return null;
+    session = makeSession(id, token.apiKey, token.model, token.createdAt);
+    sessions.set(id, session);
+  }
   if (Date.now() - session.lastSeen > SESSION_TTL_MS) {
     closeSession(id);
     return null;
@@ -129,18 +161,12 @@ function sessionFor(id) {
   return session;
 }
 
-function createSession(apiKey, model) {
-  cleanupSessions();
-  if (sessions.size >= MAX_SESSIONS) {
-    const oldest = [...sessions.values()].sort((a, b) => a.lastSeen - b.lastSeen)[0];
-    if (oldest) closeSession(oldest.id);
-  }
-  const id = randomId();
-  const session = {
+function makeSession(id, apiKey, model, createdAt = Date.now()) {
+  return {
     id,
     apiKey,
     model: model || DEFAULT_MODEL,
-    createdAt: Date.now(),
+    createdAt,
     lastSeen: Date.now(),
     histories: new Map(),
     cooldowns: new Map(),
@@ -148,6 +174,16 @@ function createSession(apiKey, model) {
     active: 0,
     sockets: new Set(),
   };
+}
+
+function createSession(apiKey, model) {
+  cleanupSessions();
+  if (sessions.size >= MAX_SESSIONS) {
+    const oldest = [...sessions.values()].sort((a, b) => a.lastSeen - b.lastSeen)[0];
+    if (oldest) closeSession(oldest.id);
+  }
+  const id = createSessionToken(apiKey, model);
+  const session = makeSession(id, apiKey, model);
   sessions.set(id, session);
   return session;
 }
