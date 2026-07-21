@@ -10,6 +10,10 @@
   <main class="shell">
     <header class="topbar">
       <img class="logo" src="/verity-title.png" alt="VERITY">
+    </header>
+
+    <section class="panel">
+      <label for="language" data-i18n="languageLabel">Idioma</label>
       <select id="language" aria-label="Language">
         <option value="es">Español</option>
         <option value="en">English</option>
@@ -17,18 +21,9 @@
         <option value="fr">Français</option>
         <option value="de">Deutsch</option>
       </select>
-    </header>
-
-    <section class="panel">
-      <p class="eyebrow" data-i18n="eyebrow">Normal world bridge</p>
-      <h1 data-i18n="title">Connect Verity to Groq</h1>
-      <p class="lede" data-i18n="lede">Paste your own Groq API key. This page creates a private connection URL for your Minecraft world.</p>
 
       <label for="groqKey" data-i18n="keyLabel">Groq API key</label>
       <input id="groqKey" autocomplete="off" spellcheck="false" type="password" placeholder="gsk_..." />
-
-      <label for="model" data-i18n="modelLabel">Model</label>
-      <input id="model" autocomplete="off" spellcheck="false" value="llama-3.1-8b-instant" />
 
       <button id="create" type="button" data-i18n="create">Create connection</button>
 
