@@ -395,7 +395,8 @@ wss.on("connection", (ws) => {
 
 	// PlayerMessage is the Bedrock event used by /connect across stable versions.
 	subscribe(ws, "PlayerMessage");
-  tellVerity(ws, "Bridge connected. I can hear you now.");
+	// Do not issue a command during the handshake; some Bedrock 26.x clients
+	// close the WebSocket when a command arrives before the subscription settles.
 });
 
 setInterval(cleanupSessions, 10 * 60 * 1000).unref();
