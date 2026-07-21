@@ -78,6 +78,19 @@ select:focus, input:focus {
 
 select {
   width: 100%;
+  color: #f7f1df;
+  background-color: #050505;
+}
+
+select option {
+  color: #f7f1df;
+  background: #050505;
+}
+
+select option:checked,
+select option:hover {
+  color: #171000;
+  background: #f3c64d;
 }
 
 .panel {
